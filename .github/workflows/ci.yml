@@ -60,12 +60,12 @@ jobs:
         run: |
           destino="$RUNNER_TEMP/destino"
           make install DESTDIR="$destino" PREFIX=/usr
-          test -f "$destino/usr/lib/libnfc.so.0.1.0"
-          test -L "$destino/usr/lib/libnfc.so.0"
+          test -f "$destino/usr/lib/libnfc.so.1.0.0"
+          test -L "$destino/usr/lib/libnfc.so.1"
           test -L "$destino/usr/lib/libnfc.so"
           test -f "$destino/usr/include/libnfc/versao.h"
           test -f "$destino/usr/lib/pkgconfig/libnfc.pc"
-          readelf -d "$destino/usr/lib/libnfc.so.0.1.0" | grep -q 'SONAME.*libnfc\.so\.0'
+          readelf -d "$destino/usr/lib/libnfc.so.1.0.0" | grep -q 'SONAME.*libnfc\.so\.1'
           PKG_CONFIG_PATH="$PKG_CONFIG_PATH:$destino/usr/lib/pkgconfig" pkg-config --exists libnfc
           make uninstall DESTDIR="$destino" PREFIX=/usr
           test -z "$(find "$destino" -type f -o -type l)"

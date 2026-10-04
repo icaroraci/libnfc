@@ -90,7 +90,7 @@ libnfc: $(LIB)/$(REALNAME) $(LIB)/$(SONAME) $(LIB)/$(LIBNAME)
 $(LIB)/$(REALNAME): $(OBJ) | $(LIB)
 	$(CC) -shared -Wl,-soname,$(SONAME) $^ -o $@ $(LIBS)
 
-#Links simbólicos: libnfc.so -> libnfc.so.0 -> libnfc.so.0.1.0
+#Links simbólicos: libnfc.so -> libnfc.so.1 -> libnfc.so.1.0.0
 $(LIB)/$(SONAME): $(LIB)/$(REALNAME)
 	ln -sf $(REALNAME) $@
 

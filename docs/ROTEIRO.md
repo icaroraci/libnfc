@@ -18,8 +18,8 @@ A libnfc depende da [libnfe](https://github.com/icaroraci/tooldoce) 1.x e não d
 
 1. ~~**QR Code e CSC**~~ (`qrcode.h`, `nfce.h`): `qrCode` nas versões 2 e 3 (normal e offline) e `urlChave`, inseridos após a assinatura; autorização síncrona com `nfeProc`. A versão 3 offline assina os parâmetros com a chave do certificado (RSA-SHA1) pela `nfe_certificado_assinar` da libnfe ([#3](https://github.com/icaroraci/libnfc/issues/3)).
 2. ~~**Endereços dos webservices da NFC-e**~~ (`enderecos.h`): webservices 4.00 por UF e ambiente e as URLs de consulta do QR Code e de `urlChave`, com as fontes em `docs/ENDERECOS.md` ([#4](https://github.com/icaroraci/libnfc/issues/4)).
-3. **Contingência offline** (`tpEmis` 9): fluxo de emissão sem a SEFAZ e transmissão posterior.
-4. **Homologação real** dos serviços, documentada como em `docs/HOMOLOGACAO.md` do tooldoce.
+3. ~~**Contingência offline**~~ (`tpEmis` 9): emissão com QR Code offline (versões 2 e 3) e transmissão posterior, autorizadas na homologação real.
+4. ~~**Homologação real**~~ dos serviços, em [`docs/HOMOLOGACAO.md`](HOMOLOGACAO.md), com o que ainda não foi testado listado no fim.
 
 O DANFE NFC-e (impressão do cupom e mensagem eletrônica) fica fora do escopo da libnfc: é responsabilidade do programa emissor, que recebe o `nfeProc` autorizado.
 
