@@ -35,7 +35,8 @@
  * dados fictícios de São Paulo, que só servem sem url:
  *   NFC_CUF (35), NFC_UF (SP), NFC_CMUN (3550308), NFC_XMUN (SAO PAULO),
  *   NFC_CNPJ, NFC_IE, NFC_XNOME, NFC_SERIE (1), NFC_NNF (1),
- *   NFC_URL_QRCODE e NFC_URL_CHAVE (URLs de consulta da NFC-e da UF).
+ *   NFC_URL_QRCODE e NFC_URL_CHAVE (URLs de consulta da NFC-e da UF),
+ *   NFC_QRCODE_VERSAO (2; na versão 3, a emissão normal não usa o CSC).
  *
  * Com o certificado de teste:
  *   ./obj/emitir_nfce tests/certificados/teste.pfx teste 1 CSCTESTE01234567
@@ -170,6 +171,9 @@ int main(int argc, char **argv)
 
 	q = nfc_qrcode_new();
 	rc = q ? nfc_qrcode_set_csc(q, argv[3], argv[4]) : E_MALLOC;
+	if (rc == 0)
+		rc = nfc_qrcode_set_versao(q,
+		                           atoi(var("NFC_QRCODE_VERSAO", "2")));
 	if (rc == 0)
 		rc = nfc_qrcode_set_url(
 		        q,
