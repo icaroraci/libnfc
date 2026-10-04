@@ -60,7 +60,7 @@ e G, usadas só nessas tentativas, foram canceladas (protocolos
 (`tpEmis` 9) o QR Code foi
 `chave|3|2|dia|vNF|||assinatura` (sem destinatário), com a assinatura
 RSA-SHA1 dos parâmetros feita com o certificado do emitente
-(`nfe_assinar_dados` da libnfe). Uma assinatura errada daria `cStat` 583.
+(`nfe_certificado_assinar` da libnfe). Uma assinatura errada daria `cStat` 583.
 
 Os eventos foram montados e assinados com a libnfe (`evento.h`) e enviados a
 `https://nfce-homologacao.svrs.rs.gov.br/ws/recepcaoevento/recepcaoevento4.asmx`.
