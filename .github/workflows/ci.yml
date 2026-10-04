@@ -24,9 +24,7 @@ jobs:
     env:
       CC: ${{ matrix.cc }}
       # Versão da libnfe (branch, tag ou commit do tooldoce) usada no CI.
-      # Provisório: a branch de icaroraci/tooldoce#271 (nfe_assinar_dados);
-      # volta a master quando aquele PR for integrado.
-      LIBNFE_REF: claude/assinar-dados
+      LIBNFE_REF: master
     steps:
       - uses: actions/checkout@v4
 

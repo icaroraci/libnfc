@@ -290,6 +290,29 @@ static int sha1_hex(const char *a, const char *b, char hex[41])
 	return 0;
 }
 
+/* Assinatura RSA-SHA1 de tam bytes de dados com a chave do certificado,
+ * em base64 (alocada; libere com free()) */
+static int assina_base64(const nfe_certificado *cert, const char *dados,
+                         size_t tam, char **base64)
+{
+	unsigned char *sig = NULL;
+	size_t tam_sig = 0;
+	int rc;
+
+	rc = nfe_certificado_assinar(cert, dados, tam, &sig, &tam_sig);
+	if (rc != 0)
+		return rc;
+	*base64 = tam_sig <= 0x3fffffff ? malloc(4 * ((tam_sig + 2) / 3) + 1)
+	                                : NULL;
+	if (*base64 == NULL) {
+		free(sig);
+		return E_MALLOC;
+	}
+	EVP_EncodeBlock((unsigned char *)*base64, sig, (int)tam_sig);
+	free(sig);
+	return 0;
+}
+
 int nfc_qrcode_gerar_cert(const nfc_qrcode *q, const nfe_certificado *cert,
                           const char *xml, size_t tam, char **qrcode)
 {
@@ -320,8 +343,7 @@ int nfc_qrcode_gerar_cert(const nfc_qrcode *q, const nfe_certificado *cert,
 			             d.tp_iddest, d.iddest);
 			if (n < 0 || (size_t)n >= sizeof p)
 				return E_XML;
-			rc = nfe_assinar_dados(cert, p, (size_t)n, &assinatura,
-			                       NULL);
+			rc = assina_base64(cert, p, (size_t)n, &assinatura);
 			if (rc != 0)
 				return rc == E_MALLOC ? E_MALLOC : E_VALOR;
 		} else {
