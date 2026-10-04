@@ -22,6 +22,7 @@ números que a SEFAZ devolveu.
 | Cancelamento (nota C) | `NFeRecepcaoEvento4`, evento 110111 | `cStat` 135, protocolo 333260002623915 |
 | Autorização síncrona (nota E, contingência offline) | `NFeAutorizacao4`, `indSinc` 1 | `cStat` 100, protocolo 333260002623916 |
 | Cancelamento por substituição (nota E, offline, substituída por F normal ou G offline) | `NFeRecepcaoEvento4`, evento 110112 | `cStat` 920, Tipo de Emissao invalido no Cancelamento por Substituicao |
+| Cancelamento (nota E) | `NFeRecepcaoEvento4`, evento 110111 | `cStat` 135, protocolo 333260002623922 |
 
 Notas usadas (série 1):
 
