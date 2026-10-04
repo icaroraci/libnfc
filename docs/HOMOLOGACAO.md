@@ -3,7 +3,8 @@
 Em **4 de outubro de 2026**, a biblioteca emitiu uma NFC-e no ambiente de
 homologação real (`tpAmb` 2), para uma empresa do Rio de Janeiro (`cUF` 33),
 autorizada pela SVRS. A nota foi montada com a libnfe, assinada com um
-certificado A1 real (e-CNPJ), recebeu o QR Code versão 2 e foi enviada com
+certificado A1 real (e-CNPJ), recebeu o QR Code (versão 2 e, depois, versão
+3) e foi enviada com
 `nfc_autorizar`, pelo exemplo `examples/emitir_nfce.c`.
 
 O XML não está no repositório: o certificado embutido na assinatura traz
@@ -23,6 +24,9 @@ números que a SEFAZ devolveu.
 | Autorização síncrona (nota E, contingência offline) | `NFeAutorizacao4`, `indSinc` 1 | `cStat` 100, protocolo 333260002623916 |
 | Cancelamento por substituição (nota E, offline, substituída por F normal ou G offline) | `NFeRecepcaoEvento4`, evento 110112 | `cStat` 920, Tipo de Emissao invalido no Cancelamento por Substituicao |
 | Cancelamento (nota E) | `NFeRecepcaoEvento4`, evento 110111 | `cStat` 135, protocolo 333260002623922 |
+| Autorização síncrona (nota H, QR Code versão 3, emissão normal) | `NFeAutorizacao4`, `indSinc` 1 | `cStat` 100, protocolo 333260002623942 |
+| Autorização síncrona (nota I, QR Code versão 3, contingência offline) | `NFeAutorizacao4`, `indSinc` 1 | `cStat` 100, protocolo 333260002623943 |
+| Cancelamento (notas H e I) | `NFeRecepcaoEvento4`, evento 110111 | `cStat` 135, protocolos 333260002623944 e 333260002623945 |
 
 Notas usadas (série 1):
 
@@ -33,6 +37,8 @@ Notas usadas (série 1):
 | C | 33261003465862000188650010000001411266363962 |
 | D | 33261003465862000188650010000008929148958977 |
 | E | 33261003465862000188650010000009329526191040 |
+| H | 33261003465862000188650010000008801892643940 |
+| I | 33261003465862000188650010000006259572481917 |
 
 A nota C (emissão normal, protocolo 333260002623911) foi a primeira tentativa
 de substituta: o evento 110112 com ela voltou `cStat` 920 (Tipo de Emissão
@@ -48,6 +54,13 @@ nota normal que acabou autorizada. Uma NFC-e emitida offline não pode ser
 substituída: para desfazê-la, use o cancelamento comum (110111). As notas F
 e G, usadas só nessas tentativas, foram canceladas (protocolos
 333260002623920 e 333260002623921).
+
+**QR Code versão 3** (NT 2025.001), notas H e I, emitidas com
+`NFC_QRCODE_VERSAO=3`: a SVRS aceita a versão 3 para o RJ. Na nota I
+(`tpEmis` 9) o QR Code foi
+`chave|3|2|dia|vNF|||assinatura` (sem destinatário), com a assinatura
+RSA-SHA1 dos parâmetros feita com o certificado do emitente
+(`nfe_assinar_dados` da libnfe). Uma assinatura errada daria `cStat` 583.
 
 Os eventos foram montados e assinados com a libnfe (`evento.h`) e enviados a
 `https://nfce-homologacao.svrs.rs.gov.br/ws/recepcaoevento/recepcaoevento4.asmx`.
@@ -70,6 +83,7 @@ esquerda (`000001` vira `1`).
 
 ## O que não foi testado
 
-- QR Code versão 3.
+- QR Code versão 3 offline com destinatário identificado (CPF ou CNPJ);
+  coberto só pelos testes unitários.
 - Consulta de protocolo e status do serviço da NFC-e.
 - Produção (`tpAmb` 1).

@@ -27,6 +27,8 @@
 #include <libnfe/erros.h>
 #include <libnfc/qrcode.h>
 
+#include "interno.h"
+
 #define TAM_ID_CSC      6
 #define TAM_CSC         36
 #define TAM_URL_QRCODE  900
@@ -40,6 +42,7 @@ struct nfc_qrcode {
 	char csc[TAM_CSC + 1];
 	char url_qrcode[TAM_URL_QRCODE + 1];
 	char url_chave[TAM_URL_CHAVE + 1];
+	const nfe_certificado *cert; /* versão 3 offline */
 };
 
 /* Campos da nota usados no QR Code */
@@ -50,6 +53,8 @@ struct dados_nota {
 	char dia[3];
 	char vnf[17];
 	char digval[29];
+	char tp_iddest[2]; /* 1 CNPJ, 2 CPF, 3 idEstrangeiro, "" sem dest */
+	char iddest[15];
 };
 
 nfc_qrcode *nfc_qrcode_new(void)
@@ -108,6 +113,14 @@ int nfc_qrcode_set_csc(nfc_qrcode *q, const char *id, const char *csc)
 		id++;
 	memcpy(q->id_csc, id, strlen(id) + 1);
 	memcpy(q->csc, csc, tam_csc + 1);
+	return 0;
+}
+
+int nfc_qrcode_set_certificado(nfc_qrcode *q, const nfe_certificado *cert)
+{
+	if (q == NULL)
+		return E_ISNULL;
+	q->cert = cert;
 	return 0;
 }
 
@@ -180,7 +193,7 @@ static int texto(xmlNodePtr n, char *buf, size_t tam)
 static int le_nota(const char *xml, size_t tam, struct dados_nota *d)
 {
 	xmlDocPtr doc;
-	xmlNodePtr raiz, inf, ide, tot;
+	xmlNodePtr raiz, inf, ide, tot, dest;
 	xmlChar *id;
 	char mod[3], dhemi[26];
 	int rc = E_XML;
@@ -225,6 +238,21 @@ static int le_nota(const char *xml, size_t tam, struct dados_nota *d)
 	/* Dia da emissão: AAAA-MM-DD... */
 	memcpy(d->dia, dhemi + 8, 2);
 
+	/* Identificação do destinatário (QR Code versão 3 offline) */
+	dest = filho(inf, "dest");
+	if (dest) {
+		if (texto(filho(dest, "CNPJ"), d->iddest, sizeof d->iddest) ==
+		    0)
+			d->tp_iddest[0] = '1';
+		else if (texto(filho(dest, "CPF"), d->iddest,
+		               sizeof d->iddest) == 0)
+			d->tp_iddest[0] = '2';
+		else if (filho(dest, "idEstrangeiro"))
+			d->tp_iddest[0] = '3';
+		else
+			goto fim;
+	}
+
 	/* DigestValue, se a nota já estiver assinada */
 	texto(filho(filho(filho(filho(raiz, "Signature"), "SignedInfo"),
 	                  "Reference"),
@@ -262,12 +290,13 @@ static int sha1_hex(const char *a, const char *b, char hex[41])
 	return 0;
 }
 
-int nfc_qrcode_gerar(const nfc_qrcode *q, const char *xml, size_t tam,
-                     char **qrcode)
+int nfc_qrcode_gerar_cert(const nfc_qrcode *q, const nfe_certificado *cert,
+                          const char *xml, size_t tam, char **qrcode)
 {
 	struct dados_nota d;
 	/* Maior caso: offline v2, 44+2+1+2+16+56+6 mais separadores */
 	char p[256], hash[41], digval_hex[57];
+	char *assinatura = NULL;
 	int offline, rc, n;
 	size_t i, tam_saida;
 
@@ -281,10 +310,23 @@ int nfc_qrcode_gerar(const nfc_qrcode *q, const char *xml, size_t tam,
 	offline = strcmp(d.tpemis, "9") == 0;
 
 	if (q->versao == 3) {
-		if (offline)
-			return E_VALOR; /* assinatura RSA: ainda não suportada
-			                 */
-		n = snprintf(p, sizeof p, "%s|3|%s", d.chave, d.tpamb);
+		if (offline) {
+			/* Assinatura RSA-SHA1 dos parâmetros, com o certificado
+			 * do emitente */
+			if (cert == NULL)
+				return E_VALOR;
+			n = snprintf(p, sizeof p, "%s|3|%s|%s|%s|%s|%s",
+			             d.chave, d.tpamb, d.dia, d.vnf,
+			             d.tp_iddest, d.iddest);
+			if (n < 0 || (size_t)n >= sizeof p)
+				return E_XML;
+			rc = nfe_assinar_dados(cert, p, (size_t)n, &assinatura,
+			                       NULL);
+			if (rc != 0)
+				return rc == E_MALLOC ? E_MALLOC : E_VALOR;
+		} else {
+			n = snprintf(p, sizeof p, "%s|3|%s", d.chave, d.tpamb);
+		}
 	} else {
 		if (q->id_csc[0] == '\0' || q->csc[0] == '\0')
 			return E_VALOR;
@@ -309,15 +351,29 @@ int nfc_qrcode_gerar(const nfc_qrcode *q, const char *xml, size_t tam,
 			return rc;
 		n = snprintf(p + n, sizeof p - (size_t)n, "|%s", hash);
 	}
-	if (n < 0 || strlen(p) >= sizeof p - 1)
+	if (n < 0 || strlen(p) >= sizeof p - 1) {
+		free(assinatura);
 		return E_XML;
+	}
 
 	tam_saida = strlen(q->url_qrcode) + 3 + strlen(p) + 1;
+	if (assinatura)
+		tam_saida += 1 + strlen(assinatura);
 	*qrcode = malloc(tam_saida);
-	if (*qrcode == NULL)
+	if (*qrcode == NULL) {
+		free(assinatura);
 		return E_MALLOC;
-	snprintf(*qrcode, tam_saida, "%s?p=%s", q->url_qrcode, p);
+	}
+	snprintf(*qrcode, tam_saida, "%s?p=%s%s%s", q->url_qrcode, p,
+	         assinatura ? "|" : "", assinatura ? assinatura : "");
+	free(assinatura);
 	return 0;
+}
+
+int nfc_qrcode_gerar(const nfc_qrcode *q, const char *xml, size_t tam,
+                     char **qrcode)
+{
+	return nfc_qrcode_gerar_cert(q, q ? q->cert : NULL, xml, tam, qrcode);
 }
 
 /* Tamanho de s escapado para o conteúdo de um elemento XML */
@@ -363,6 +419,14 @@ static const char *busca_ultima(const char *xml, size_t tam, const char *agulha)
 int nfc_qrcode_inserir(const nfc_qrcode *q, const char *xml, size_t tam,
                        char **saida, size_t *tam_saida)
 {
+	return nfc_qrcode_inserir_cert(q, q ? q->cert : NULL, xml, tam, saida,
+	                               tam_saida);
+}
+
+int nfc_qrcode_inserir_cert(const nfc_qrcode *q, const nfe_certificado *cert,
+                            const char *xml, size_t tam, char **saida,
+                            size_t *tam_saida)
+{
 	static const char abre[] = "<infNFeSupl><qrCode>",
 	                  meio[] = "</qrCode><urlChave>",
 	                  fecha[] = "</urlChave></infNFeSupl>";
@@ -378,7 +442,7 @@ int nfc_qrcode_inserir(const nfc_qrcode *q, const char *xml, size_t tam,
 		return E_VALOR;
 	if (busca_ultima(xml, tam, "<infNFeSupl") != NULL)
 		return E_XML;
-	rc = nfc_qrcode_gerar(q, xml, tam, &qrcode);
+	rc = nfc_qrcode_gerar_cert(q, cert, xml, tam, &qrcode);
 	if (rc != 0)
 		return rc;
 	pos = busca_ultima(xml, tam, fim_inf);
