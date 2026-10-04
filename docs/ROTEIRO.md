@@ -1,0 +1,25 @@
+# Roteiro
+
+A libnfc depende da [libnfe](https://github.com/icaroraci/tooldoce) 1.x e não duplica nada dela. Esta página separa o que a libnfe já entrega para o modelo 65 do que falta construir aqui.
+
+## O que a libnfe já faz pela NFC-e
+
+| Recurso | Onde, na libnfe |
+|---|---|
+| Todos os grupos do leiaute 4.00 (PL_010f), com `mod` 65, `tpImp` 4/5, `tpEmis` 9 e `dest` opcional | `nfe_nfe.h`, `ide.h` (`NFE_MODELO_NFCE`, `NFE_DANFE_NFCE`, `NFE_EMISSAO_CONTINGENCIA_OFFLINE_NFCE`) |
+| Grupo `infNFeSupl` (`qrCode`, `urlChave`), validado contra o padrão do XSD | `nfe_nfe_grupo(nota, "infNFeSupl")` (`grupo.h`) |
+| Validação pelo XSD e regras da NFC-e (consumidor final, operação interna, DANFE NFC-e) | `validar.h` (`regra_nfce` em `validar.c`) |
+| Chave de acesso, assinatura A1 | `chave.h`, `assinatura.h` |
+| Envio SOAP/TLS a uma URL informada | `nfe_sefaz_enviar` (`sefaz.h`) |
+| Cancelamento por substituição (110112), só NFC-e | `evento.h` |
+| Exemplo de NFC-e completa | `examples/gerar_nfe.c` e `examples/assinar_nfe.c` do tooldoce |
+
+## O que falta, na libnfc
+
+1. ~~**QR Code e CSC**~~ (`qrcode.h`, `nfce.h`): `qrCode` nas versões 2 (normal e offline) e 3 (normal) e `urlChave`, inseridos após a assinatura; autorização síncrona com `nfeProc`. Falta a versão 3 em contingência offline, que assina os parâmetros com a chave do certificado (RSA-SHA1): a libnfe precisa expor essa assinatura.
+2. **Endereços dos webservices da NFC-e** por UF e ambiente (autorização, consulta, status, eventos) e as URLs de consulta do QR Code e de `urlChave`. `nfe_sefaz_endereco` da libnfe é só do modelo 55.
+3. **Contingência offline** (`tpEmis` 9): fluxo de emissão sem a SEFAZ e transmissão posterior.
+4. **DANFE NFC-e**: impressão (cupom) e mensagem eletrônica.
+5. **Homologação real** dos serviços, documentada como em `docs/HOMOLOGACAO.md` do tooldoce.
+
+Se algum item exigir mudança no XML comum (um setter que falta, uma regra de validação), a mudança vai para a libnfe, e a libnfc passa a exigir a versão que a trouxer.
