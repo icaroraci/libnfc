@@ -42,6 +42,10 @@ jobs:
           sh .github/scripts/instalar_libnfe.sh "$RUNNER_TEMP/libnfe" "$LIBNFE_REF"
           echo "PKG_CONFIG_PATH=$RUNNER_TEMP/libnfe/lib/pkgconfig" >> "$GITHUB_ENV"
 
+      - name: Schemas sem alteração
+        if: matrix.cc == 'gcc'
+        run: cd tests/schemas && sha256sum -c --quiet SHA256SUMS
+
       - name: Formatação
         if: matrix.cc == 'gcc'
         run: make verificar-formato

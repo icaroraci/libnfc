@@ -1,0 +1,19 @@
+{
+  "documento": "NFC-e",
+  "versao": "4.00",
+  "biblioteca": "libnfc",
+  "schemas": "tests/schemas/nfe",
+  "tipos": ["tiposBasico_v4.00.xsd", "DFeTiposBasicos_v1.00.xsd"],
+  "leiaute": "leiauteNFe_v4.00.xsd",
+  "raiz": {"elemento": "NFe", "tipo": "TNFe"},
+  "repositorio": "icaroraci/libnfc",
+  "ramo": "main",
+  "padroes": {"saida": "src/libnfc/padroes.h", "prefixo": "NFC_"},
+  "esquemas": {
+    "saida": "src/libnfc/esquemas.c",
+    "cabecalho": "src/libnfc/esquemas.h",
+    "prefixo": "nfc_esq_",
+    "raizes": ["infNFeSupl"]
+  },
+  "diagramas": {"saida": "docs/diagramas", "todo": "TODO.md"}
+}

@@ -184,12 +184,17 @@ static void testa_autorizar(const nfe_certificado *cert, const char *xml,
 int main(int argc, char **argv)
 {
 	const char *dir = argc > 1 ? argv[1] : "tests";
-	char pfx[1024];
+	char pfx[1024], schemas[1024];
 	nfe_certificado *cert;
-	nfe_validador *v = nfe_validador_new(NULL);
+	nfe_validador *v;
 	nfc_qrcode *q = nfc_qrcode_new();
 	char *xml, *dummy = NULL;
 	int rc = 0;
+
+	/* Schemas oficiais do repositório (tests/schemas/nfe), os mesmos da
+	 * NF-e 4.00: a NFC-e não tem XSD próprio */
+	snprintf(schemas, sizeof schemas, "%s/schemas/nfe", dir);
+	v = nfe_validador_new(schemas);
 
 	snprintf(pfx, sizeof pfx, "%s/certificados/teste.pfx", dir);
 	cert = nfe_certificado_pfx(pfx, "teste", &rc);
