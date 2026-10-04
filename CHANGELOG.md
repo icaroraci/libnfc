@@ -10,7 +10,8 @@ As mudanças relevantes de cada versão ficam registradas aqui. O formato segue 
 - Dependência da libnfe 1.x pelo `pkg-config`.
 - QR Code da NFC-e (`qrcode.h`): versão 2 com CSC (emissão normal e contingência offline) e versão 3 (emissão normal), e o grupo `infNFeSupl` inserido na nota assinada sem invalidar a assinatura.
 - Emissão (`nfce.h`): `nfc_assinar` (assinatura e QR Code) e `nfc_autorizar` (lote síncrono, `cStat` e `nfeProc`).
-- Exemplo `examples/emitir_nfce.c`, que emite uma NFC-e de homologação.
+- Exemplo `examples/emitir_nfce.c`, que emite uma NFC-e de homologação; a versão do QR Code é escolhida por `NFC_QRCODE_VERSAO`, e `NFC_TPEMIS=9` emite em contingência offline.
+- NFC-e autorizada na homologação real da SEFAZ (RJ, SVRS), em emissão normal e em contingência offline, com cancelamento e cancelamento por substituição, registrados em `docs/HOMOLOGACAO.md`.
 - Versão da biblioteca em `<libnfc/versao.h>` (`NFC_VERSAO`) e em tempo de execução (`nfc_versao()`).
 
 [Não lançado]: https://github.com/icaroraci/libnfc/commits/main
