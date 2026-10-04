@@ -19,6 +19,9 @@ números que a SEFAZ devolveu.
 | Autorização síncrona (nota B, emissão normal) | `NFeAutorizacao4`, `indSinc` 1 | `cStat` 100, protocolo 333260002623910 |
 | Autorização síncrona (nota D, contingência offline, `tpEmis` 9) | `NFeAutorizacao4`, `indSinc` 1 | `cStat` 100, protocolo 333260002623912 |
 | Cancelamento por substituição (nota B, substituída pela D) | `NFeRecepcaoEvento4`, evento 110112 | `cStat` 135, Evento registrado e vinculado a NF-e, protocolo 333260002623913 |
+| Cancelamento (nota C) | `NFeRecepcaoEvento4`, evento 110111 | `cStat` 135, protocolo 333260002623915 |
+| Autorização síncrona (nota E, contingência offline) | `NFeAutorizacao4`, `indSinc` 1 | `cStat` 100, protocolo 333260002623916 |
+| Cancelamento por substituição (nota E, offline, substituída por F normal ou G offline) | `NFeRecepcaoEvento4`, evento 110112 | `cStat` 920, Tipo de Emissao invalido no Cancelamento por Substituicao |
 
 Notas usadas (série 1):
 
@@ -28,12 +31,22 @@ Notas usadas (série 1):
 | B | 33261003465862000188650010000007561535695808 |
 | C | 33261003465862000188650010000001411266363962 |
 | D | 33261003465862000188650010000008929148958977 |
+| E | 33261003465862000188650010000009329526191040 |
 
 A nota C (emissão normal, protocolo 333260002623911) foi a primeira tentativa
 de substituta: o evento 110112 com ela voltou `cStat` 920 (Tipo de Emissão
 inválido no Cancelamento por Substituição), porque a substituta tem de ser
 de contingência offline. A nota D foi emitida com `NFC_TPEMIS=9` e confirma
 que o QR Code offline (dia, vNF e digVal) foi aceito.
+
+**Regra do cancelamento por substituição**, confirmada pelos casos acima: a
+nota cancelada tem de ser de emissão normal (`tpEmis` 1) e a substituta, de
+contingência offline (`tpEmis` 9). É o caso do PDV que não recebe a resposta
+da autorização, emite em contingência para a mesma venda e depois cancela a
+nota normal que acabou autorizada. Uma NFC-e emitida offline não pode ser
+substituída: para desfazê-la, use o cancelamento comum (110111). As notas F
+e G, usadas só nessas tentativas, foram canceladas (protocolos
+333260002623920 e 333260002623921).
 
 Os eventos foram montados e assinados com a libnfe (`evento.h`) e enviados a
 `https://nfce-homologacao.svrs.rs.gov.br/ws/recepcaoevento/recepcaoevento4.asmx`.
