@@ -14,9 +14,30 @@ números que a SEFAZ devolveu.
 
 | Serviço | Webservice | Resultado da SEFAZ |
 |---|---|---|
-| Autorização síncrona | `NFeAutorizacao4` da NFC-e na SVRS, `indSinc` 1 | `cStat` 100, Autorizado o uso da NF-e, protocolo 333260002623908 |
+| Autorização síncrona (nota A) | `NFeAutorizacao4`, `indSinc` 1 | `cStat` 100, Autorizado o uso da NF-e, protocolo 333260002623908 |
+| Cancelamento (nota A) | `NFeRecepcaoEvento4`, evento 110111 | `cStat` 135, Evento registrado e vinculado a NF-e, protocolo 333260002623909 |
+| Autorização síncrona (nota B, emissão normal) | `NFeAutorizacao4`, `indSinc` 1 | `cStat` 100, protocolo 333260002623910 |
+| Autorização síncrona (nota D, contingência offline, `tpEmis` 9) | `NFeAutorizacao4`, `indSinc` 1 | `cStat` 100, protocolo 333260002623912 |
+| Cancelamento por substituição (nota B, substituída pela D) | `NFeRecepcaoEvento4`, evento 110112 | `cStat` 135, Evento registrado e vinculado a NF-e, protocolo 333260002623913 |
 
-Chave de acesso: `33261003465862000188650010000006571827492410`.
+Notas usadas (série 1):
+
+| Nota | Chave de acesso |
+|---|---|
+| A | 33261003465862000188650010000006571827492410 |
+| B | 33261003465862000188650010000007561535695808 |
+| C | 33261003465862000188650010000001411266363962 |
+| D | 33261003465862000188650010000008929148958977 |
+
+A nota C (emissão normal, protocolo 333260002623911) foi a primeira tentativa
+de substituta: o evento 110112 com ela voltou `cStat` 920 (Tipo de Emissão
+inválido no Cancelamento por Substituição), porque a substituta tem de ser
+de contingência offline. A nota D foi emitida com `NFC_TPEMIS=9` e confirma
+que o QR Code offline (dia, vNF e digVal) foi aceito.
+
+Os eventos foram montados e assinados com a libnfe (`evento.h`) e enviados a
+`https://nfce-homologacao.svrs.rs.gov.br/ws/recepcaoevento/recepcaoevento4.asmx`.
+O `dhEvento` não pode ser anterior à emissão da nota (`cStat` 577).
 
 Endereços usados:
 
@@ -35,6 +56,6 @@ esquerda (`000001` vira `1`).
 
 ## O que não foi testado
 
-- Contingência offline (`tpEmis` 9) e QR Code versão 3.
-- Eventos da NFC-e (cancelamento e cancelamento por substituição) e consulta.
+- QR Code versão 3.
+- Consulta de protocolo e status do serviço da NFC-e.
 - Produção (`tpAmb` 1).

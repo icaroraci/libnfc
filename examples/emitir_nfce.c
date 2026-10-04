@@ -36,7 +36,8 @@
  *   NFC_CUF (35), NFC_UF (SP), NFC_CMUN (3550308), NFC_XMUN (SAO PAULO),
  *   NFC_CNPJ, NFC_IE, NFC_XNOME, NFC_SERIE (1), NFC_NNF (1),
  *   NFC_URL_QRCODE e NFC_URL_CHAVE (URLs de consulta da NFC-e da UF),
- *   NFC_QRCODE_VERSAO (2; na versão 3, a emissão normal não usa o CSC).
+ *   NFC_QRCODE_VERSAO (2; na versão 3, a emissão normal não usa o CSC),
+ *   NFC_TPEMIS (1; 9 emite em contingência offline, com dhCont e xJust).
  *
  * Com o certificado de teste:
  *   ./obj/emitir_nfce tests/certificados/teste.pfx teste 1 CSCTESTE01234567
@@ -94,6 +95,12 @@ static nfe_nfe *monta_nota(void)
 	rc |= nfe_ide_set_indfinal(ide, NFE_CONSUMIDOR_FINAL);
 	rc |= nfe_ide_set_indpres(ide, NFE_PRESENCA_PRESENCIAL);
 	rc |= nfe_ide_set_verproc(ide, "libnfc " NFC_VERSAO);
+	if (atoi(var("NFC_TPEMIS", "1")) == 9) {
+		rc |= nfe_ide_set_tpemis(ide,
+		                         NFE_EMISSAO_CONTINGENCIA_OFFLINE_NFCE);
+		rc |= nfe_ide_set_contingencia(
+		        ide, time(NULL), "SEM CONEXAO COM A INTERNET NA LOJA");
+	}
 	if (rc != 0)
 		fprintf(stderr, "erro na identificação (ide)\n");
 
