@@ -9,13 +9,13 @@ A libnfc é construída sobre a [libnfe](https://github.com/icaroraci/tooldoce),
 
 ## Situação
 
-Em desenvolvimento (0.1.0-dev), ainda sem teste na homologação real da SEFAZ.
+Em desenvolvimento (0.1.0-dev). A emissão foi autorizada na homologação real da SEFAZ (RJ, pela SVRS): ver [`docs/HOMOLOGACAO.md`](docs/HOMOLOGACAO.md).
 
 | Recurso | Situação |
 |---|---|
 | QR Code versão 2 (CSC), emissão normal e contingência offline | Pronto (`qrcode.h`) |
 | QR Code versão 3, emissão normal | Pronto; a contingência offline na versão 3 depende de uma função da libnfe |
-| Assinatura com QR Code e autorização síncrona (`nfeProc`) | Pronto (`nfce.h`), testado contra um servidor falso |
+| Assinatura com QR Code e autorização síncrona (`nfeProc`) | Pronto (`nfce.h`), autorizado na homologação real |
 | Endereços dos webservices e da consulta da NFC-e por UF | A fazer: por enquanto as URLs são informadas pelo programa |
 | DANFE NFC-e | A fazer |
 
