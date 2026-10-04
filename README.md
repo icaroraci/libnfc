@@ -9,11 +9,39 @@ A libnfc é construída sobre a [libnfe](https://github.com/icaroraci/tooldoce),
 
 ## Situação
 
-Em desenvolvimento (0.1.0-dev). Por enquanto há só a estrutura do projeto: build, testes, CI e a ligação com a libnfe.
+Em desenvolvimento (0.1.0-dev), ainda sem teste na homologação real da SEFAZ.
+
+| Recurso | Situação |
+|---|---|
+| QR Code versão 2 (CSC), emissão normal e contingência offline | Pronto (`qrcode.h`) |
+| QR Code versão 3, emissão normal | Pronto; a contingência offline na versão 3 depende de uma função da libnfe |
+| Assinatura com QR Code e autorização síncrona (`nfeProc`) | Pronto (`nfce.h`), testado contra um servidor falso |
+| Endereços dos webservices e da consulta da NFC-e por UF | A fazer: por enquanto as URLs são informadas pelo programa |
+| DANFE NFC-e | A fazer |
+
+## Uso
+
+A nota é montada com a libnfe, com `nfe_ide_set_mod(ide, NFE_MODELO_NFCE)`. Depois:
+
+```c
+nfc_qrcode *q = nfc_qrcode_new();
+nfc_qrcode_set_csc(q, "000001", csc);              /* fornecidos pela SEFAZ da UF */
+nfc_qrcode_set_url(q, url_qrcode, url_chave);      /* consulta da NFC-e na UF */
+
+nfe_nfe_xml(nota, &xml, &tam);
+nfc_assinar(cert, q, xml, tam, &nfce, NULL);       /* assina e acrescenta infNFeSupl */
+nfc_autorizar(sefaz, url_autorizacao, "1", nfce,   /* lote síncrono */
+              &cstat, motivo, sizeof motivo, &proc, NULL);
+if (cstat == 100)
+        ... guarde proc (nfeProc) ...
+```
+
+O programa completo está em [`examples/emitir_nfce.c`](examples/emitir_nfce.c).
 
 ## Dependências
 
 - [libnfe](https://github.com/icaroraci/tooldoce) 1.x, encontrada pelo `pkg-config` (`libnfe.pc`), com as dependências dela (libxml2, xmlsec1 com OpenSSL e libcurl).
+- libxml2 e OpenSSL (`libssl-dev`), usadas também diretamente.
 - Compilador C99 (gcc ou clang) e GNU make.
 
 Enquanto a libnfe não instala o `libnfe.pc` ([tooldoce#266](https://github.com/icaroraci/tooldoce/issues/266)), há duas saídas:
@@ -31,7 +59,8 @@ make LIBNFE_CFLAGS="-I/usr/local/include $(xml2-config --cflags)" LIBNFE_LIBS="-
 
 ```sh
 make                      # lib/libnfc.so (SONAME libnfc.so.0)
-make test                 # testes com AddressSanitizer e UBSan
+make test                 # testes com AddressSanitizer e UBSan (python3 para o servidor falso da SEFAZ)
+make exemplos             # examples/*.c em obj/
 make install PREFIX=/usr  # biblioteca, headers em include/libnfc e libnfc.pc
 ```
 

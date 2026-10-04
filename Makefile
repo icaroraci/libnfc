@@ -1,4 +1,5 @@
-# Dependência: libnfe 1.x (https://github.com/icaroraci/tooldoce), encontrada
+# Dependências: libxml2 e OpenSSL (libcrypto), usadas diretamente, e
+# libnfe 1.x (https://github.com/icaroraci/tooldoce), encontrada
 # pelo pkg-config (libnfe.pc). Para usar uma libnfe sem libnfe.pc, informe
 # as flags à mão:
 #   make LIBNFE_CFLAGS="-I/opt/libnfe/include $(xml2-config --cflags)" \
@@ -10,6 +11,9 @@ ifeq ($(origin LIBNFE_LIBS),undefined)
 ifneq ($(shell $(PKG_CONFIG) --exists 'libnfe >= 1.0' 2>/dev/null && echo ok),ok)
 $(error libnfe >= 1.0 não encontrada pelo pkg-config. Instale a libnfe (https://github.com/icaroraci/tooldoce), ajuste PKG_CONFIG_PATH ou informe LIBNFE_CFLAGS e LIBNFE_LIBS)
 endif
+endif
+ifneq ($(shell $(PKG_CONFIG) --exists libxml-2.0 libcrypto 2>/dev/null && echo ok),ok)
+$(error libxml2 ou OpenSSL (libcrypto) não encontrados. Instale as bibliotecas de desenvolvimento (ex.: apt install libxml2-dev libssl-dev))
 endif
 endif
 
@@ -24,11 +28,11 @@ RPATH_LIBNFE   = $(if $(LIBNFE_LIBDIR),-Wl$(,)-rpath$(,)$(LIBNFE_LIBDIR))
 
 # Flags do compilador
 # -MMD -MP gera arquivos .d para recompilar quando um header muda
-CFLAGS := -Werror -Wall -Wextra -Wwrite-strings -std=c99 -g -fPIC -MMD -MP $(LIBNFE_CFLAGS)
+CFLAGS := -Werror -Wall -Wextra -Wwrite-strings -std=c99 -g -fPIC -MMD -MP $(LIBNFE_CFLAGS) $(shell $(PKG_CONFIG) --cflags libxml-2.0 libcrypto 2>/dev/null)
 
 
 # Flags para adicionar libs
-LIBS := $(LIBNFE_LIBS)
+LIBS := $(LIBNFE_LIBS) $(shell $(PKG_CONFIG) --libs libxml-2.0 libcrypto 2>/dev/null)
 
 
 #-I includes

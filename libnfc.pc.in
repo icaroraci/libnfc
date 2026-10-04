@@ -7,5 +7,6 @@ Description: Biblioteca C para emissão de NFC-e (modelo 65)
 URL: https://github.com/icaroraci/libnfc
 Version: @VERSAO@
 Requires: libnfe >= 1.0
+Requires.private: libxml-2.0 libcrypto
 Cflags: -I${includedir}
 Libs: -L${libdir} -lnfc

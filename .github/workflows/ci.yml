@@ -31,7 +31,7 @@ jobs:
       - name: Instalar dependências
         run: |
           sudo apt-get update
-          sudo apt-get install -y libxml2-dev libxmlsec1-dev libcurl4-openssl-dev clang-format ${{ matrix.pacotes }}
+          sudo apt-get install -y libxml2-dev libxmlsec1-dev libcurl4-openssl-dev libssl-dev clang-format ${{ matrix.pacotes }}
 
       # Enquanto a libnfe não for empacotada, ela é compilada a partir do
       # tooldoce; o script grava um libnfe.pc provisório se ela ainda não
@@ -50,6 +50,11 @@ jobs:
 
       - name: Testes
         run: make test
+
+      - name: Exemplos
+        run: |
+          make exemplos
+          ./obj/emitir_nfce tests/certificados/teste.pfx teste 1 CSCTESTE01234567 > /dev/null
 
       - name: Instalação
         run: |
