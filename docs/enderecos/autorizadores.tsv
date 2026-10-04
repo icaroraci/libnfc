@@ -1,0 +1,42 @@
+# Autorizador da NFC-e de cada UF (o mesmo nos dois ambientes).
+#
+# Fonte: Portal Nacional da NFC-e (ENCAT), páginas de webservices
+# (https://nfce.encat.org/desenvolvedor/webservices-h/ e -p/), que listam os
+# autorizadores próprios (AM, GO, MG, MS, MT, PR, RS, SP) e a SVRS; as
+# demais UFs usam a SVRS. Capturado em 2026-10-04.
+#
+# Conferência ao vivo em 2026-10-04: NfeStatusServico4 de homologação, com o
+# cUF de cada UF, respondeu cStat 107 no autorizador abaixo para as 27 UFs
+# (MG: ver webservices.tsv). Controle negativo: a SVRS respondeu cStat 410
+# (UF não atendida) para SP e MG, e SP respondeu 289 para o RJ. O CE, que a
+# página de homologação lista só com serviços 3.10 próprios, é atendido
+# pela SVRS na versão 4.00.
+#
+# Colunas: UF, autorizador
+RO	SVRS
+AC	SVRS
+AM	AM
+RR	SVRS
+PA	SVRS
+AP	SVRS
+TO	SVRS
+MA	SVRS
+PI	SVRS
+CE	SVRS
+RN	SVRS
+PB	SVRS
+PE	SVRS
+AL	SVRS
+SE	SVRS
+BA	SVRS
+MG	MG
+ES	SVRS
+RJ	SVRS
+SP	SP
+PR	PR
+SC	SVRS
+RS	RS
+MS	MS
+MT	MT
+GO	GO
+DF	SVRS

@@ -14,9 +14,9 @@ Em desenvolvimento (0.1.0-dev). A emissão foi autorizada na homologação real 
 | Recurso | Situação |
 |---|---|
 | QR Code versão 2 (CSC), emissão normal e contingência offline | Pronto (`qrcode.h`) |
-| QR Code versão 3, emissão normal | Pronto; a contingência offline na versão 3 depende de uma função da libnfe ([#3](https://github.com/icaroraci/libnfc/issues/3)) |
+| QR Code versão 3 (NT 2025.001, sem CSC), emissão normal e contingência offline | Pronto (`qrcode.h`); a offline é assinada com o certificado e foi autorizada na homologação real |
 | Assinatura com QR Code e autorização síncrona (`nfeProc`) | Pronto (`nfce.h`), autorizado na homologação real |
-| Endereços dos webservices e da consulta da NFC-e por UF | A fazer: por enquanto as URLs são informadas pelo programa ([#4](https://github.com/icaroraci/libnfc/issues/4)) |
+| Endereços dos webservices e da consulta da NFC-e por UF | Pronto (`enderecos.h`), 27 UFs, com as fontes em [`docs/ENDERECOS.md`](docs/ENDERECOS.md) |
 
 ## Uso
 

@@ -1,0 +1,81 @@
+# URLs de consulta da NFC-e por UF e ambiente: qrCode (endereço da consulta
+# pelo QR Code, antes do "?p=") e urlChave (consulta pela chave de acesso).
+#
+# Fontes, no Portal Nacional da NFC-e (ENCAT), capturadas em 2026-10-04:
+#   qrCode:   https://nfce.encat.org/desenvolvedor/qrcode/
+#             ("URL por UF utilizada QR code"; o Manual de Especificações
+#             Técnicas do DANFE NFC-e e QR Code, de 24/03/2025, item 4.1,
+#             remete a essa página)
+#   urlChave: https://nfce.encat.org/consulte-sua-nota-qr-code-versao-2-0/
+#             ("URL por UF utilizada para consulta chave - Qr Code versão
+#             2.0", de 21/03/2018)
+#
+# Ajustes feitos sobre o texto das páginas, para caber no padrão do XSD e de
+# nfc_qrcode_set_url:
+#   - qrCode sem o "?" final (AC, CE, DF, MS, PR, SC, SE: "...qrcode?").
+#   - AM e MA aparecem sem protocolo; foi acrescentado "http://". AM traz
+#     ainda o exemplo "?chNFe=1315....", retirado. Em MA (homologação), a
+#     página traz "homolog acao.sefaz.ma.gov.br"; foi lido
+#     "homologacao.sefaz.ma.gov.br".
+#   - Onde a página indica troca de endereço com data (GO, MG, PB, RJ, RN),
+#     vale o endereço novo, já em vigor em 2026-10-04. O RJ trocou
+#     www4.fazenda.rj.gov.br/consultaNFCe/QRCode por
+#     consultadfe.fazenda.rj.gov.br/consultaNFCe/QRCode.
+#   - SP lista dois endereços; ConsultaQRCode.aspx é o da versão 1 do QR
+#     Code, e foi usado o "/qrcode".
+#
+# Colunas: UF, ambiente (h ou p), qrCode, urlChave
+AC	p	http://www.sefaznet.ac.gov.br/nfce/qrcode	www.sefaznet.ac.gov.br/nfce/consulta
+AC	h	http://www.hml.sefaznet.ac.gov.br/nfce/qrcode	www.sefaznet.ac.gov.br/nfce/consulta
+AL	p	http://nfce.sefaz.al.gov.br/QRCode/consultarNFCe.jsp	www.sefaz.al.gov.br/nfce/consulta
+AL	h	http://nfce.sefaz.al.gov.br/QRCode/consultarNFCe.jsp	www.sefaz.al.gov.br/nfce/consulta
+AP	p	https://www.sefaz.ap.gov.br/nfce/nfcep.php	www.sefaz.ap.gov.br/nfce/consulta
+AP	h	https://www.sefaz.ap.gov.br/nfcehml/nfce.php	www.sefaz.ap.gov.br/nfce/consulta
+AM	p	http://sistemas.sefaz.am.gov.br/nfceweb/consultarNFCe.jsp	www.sefaz.am.gov.br/nfce/consulta
+AM	h	http://homnfce.sefaz.am.gov.br/nfceweb/consultarNFCe.jsp	www.sefaz.am.gov.br/nfce/consulta
+BA	p	http://nfe.sefaz.ba.gov.br/servicos/nfce/qrcode.aspx	www.sefaz.ba.gov.br/nfce/consulta
+BA	h	http://hnfe.sefaz.ba.gov.br/servicos/nfce/qrcode.aspx	http://hinternet.sefaz.ba.gov.br/nfce/consulta
+CE	p	http://nfce.sefaz.ce.gov.br/pages/ShowNFCe.html	www.sefaz.ce.gov.br/nfce/consulta
+CE	h	http://nfceh.sefaz.ce.gov.br/pages/ShowNFCe.html	www.sefaz.ce.gov.br/nfce/consulta
+DF	p	http://www.fazenda.df.gov.br/nfce/qrcode	www.fazenda.df.gov.br/nfce/consulta
+DF	h	http://www.fazenda.df.gov.br/nfce/qrcode	www.fazenda.df.gov.br/nfce/consulta
+ES	p	http://app.sefaz.es.gov.br/ConsultaNFCe/	www.sefaz.es.gov.br/nfce/consulta
+ES	h	http://homologacao.sefaz.es.gov.br/ConsultaNFCe/	www.sefaz.es.gov.br/nfce/consulta
+GO	p	https://nfeweb.sefaz.go.gov.br/nfeweb/sites/nfce/danfeNFCe	www.sefaz.go.gov.br/nfce/consulta
+GO	h	https://nfewebhomolog.sefaz.go.gov.br/nfeweb/sites/nfce/danfeNFCe	www.sefaz.go.gov.br/nfce/consulta
+MA	p	http://nfce.sefaz.ma.gov.br/portal/consultarNFCe.jsp	www.sefaz.ma.gov.br/nfce/consulta
+MA	h	http://homologacao.sefaz.ma.gov.br/portal/consultarNFCe.jsp	www.sefaz.ma.gov.br/nfce/consulta
+MT	p	http://www.sefaz.mt.gov.br/nfce/consultanfce	http://www.sefaz.mt.gov.br/nfce/consultanfce
+MT	h	http://homologacao.sefaz.mt.gov.br/nfce/consultanfce	http://homologacao.sefaz.mt.gov.br/nfce/consultanfce
+MS	p	http://www.dfe.ms.gov.br/nfce/qrcode	www.dfe.ms.gov.br/nfce/consulta
+MS	h	http://www.dfe.ms.gov.br/nfce/qrcode	www.dfe.ms.gov.br/nfce/consulta
+MG	p	https://portalsped.fazenda.mg.gov.br/portalnfce/sistema/qrcode.xhtml	http://nfce.fazenda.mg.gov.br/portalnfce
+MG	h	https://portalsped.fazenda.mg.gov.br/portalnfce/sistema/qrcode.xhtml	http://hnfce.fazenda.mg.gov.br/portalnfce/
+PA	p	https://appnfc.sefa.pa.gov.br/portal/view/consultas/nfce/nfceForm.seam	www.sefa.pa.gov.br/nfce/consulta
+PA	h	https://appnfc.sefa.pa.gov.br/portal-homologacao/view/consultas/nfce/nfceForm.seam	www.sefa.pa.gov.br/nfce/consulta
+PB	p	http://www.sefaz.pb.gov.br/nfce	www.sefaz.pb.gov.br/nfce/consulta
+PB	h	http://www.sefaz.pb.gov.br/nfcehom	www.sefaz.pb.gov.br/nfcehom
+PR	p	http://www.fazenda.pr.gov.br/nfce/qrcode	http://www.fazenda.pr.gov.br/nfce/consulta
+PR	h	http://www.fazenda.pr.gov.br/nfce/qrcode	http://www.fazenda.pr.gov.br/nfce/consulta
+PE	p	http://nfce.sefaz.pe.gov.br/nfce/consulta	nfce.sefaz.pe.gov.br/nfce/consulta
+PE	h	http://nfcehomolog.sefaz.pe.gov.br/nfce/consulta	nfce.sefaz.pe.gov.br/nfce/consulta
+PI	p	http://www.sefaz.pi.gov.br/nfce/qrcode	www.sefaz.pi.gov.br/nfce/consulta
+PI	h	http://www.sefaz.pi.gov.br/nfce/qrcode	www.sefaz.pi.gov.br/nfce/consulta
+RJ	p	https://consultadfe.fazenda.rj.gov.br/consultaNFCe/QRCode	www.fazenda.rj.gov.br/nfce/consulta
+RJ	h	https://consultadfe.fazenda.rj.gov.br/consultaNFCe/QRCode	www.fazenda.rj.gov.br/nfce/consulta
+RN	p	https://nfce.sefaz.rn.gov.br/consultarNFCe.aspx	www.set.rn.gov.br/nfce/consulta
+RN	h	https://hom.nfce.sefaz.rn.gov.br/consultarNFCe.aspx	www.set.rn.gov.br/nfce/consulta
+RS	p	https://www.sefaz.rs.gov.br/NFCE/NFCE-COM.aspx	www.sefaz.rs.gov.br/nfce/consulta
+RS	h	https://www.sefaz.rs.gov.br/NFCE/NFCE-COM.aspx	www.sefaz.rs.gov.br/nfce/consulta
+RO	p	http://www.nfce.sefin.ro.gov.br/consultanfce/consulta.jsp	www.sefin.ro.gov.br/nfce/consulta
+RO	h	http://www.nfce.sefin.ro.gov.br/consultanfce/consulta.jsp	www.sefin.ro.gov.br/nfce/consulta
+RR	p	https://www.sefaz.rr.gov.br/nfce/servlet/qrcode	www.sefaz.rr.gov.br/nfce/consulta
+RR	h	http://200.174.88.103:8080/nfce/servlet/qrcode	www.sefaz.rr.gov.br/nfce/consulta
+SC	p	https://sat.sef.sc.gov.br/nfce/consulta	https://sat.sef.sc.gov.br/nfce/consulta
+SC	h	https://hom.sat.sef.sc.gov.br/nfce/consulta	https://hom.sat.sef.sc.gov.br/nfce/consulta
+SP	p	https://www.nfce.fazenda.sp.gov.br/qrcode	https://www.nfce.fazenda.sp.gov.br/consulta
+SP	h	https://www.homologacao.nfce.fazenda.sp.gov.br/qrcode	https://www.homologacao.nfce.fazenda.sp.gov.br/consulta
+SE	p	http://www.nfce.se.gov.br/nfce/qrcode	http://www.nfce.se.gov.br/nfce/consulta
+SE	h	http://www.hom.nfe.se.gov.br/nfce/qrcode	http://www.hom.nfe.se.gov.br/nfce/consulta
+TO	p	http://www.sefaz.to.gov.br/nfce/qrcode	www.sefaz.to.gov.br/nfce/consulta
+TO	h	http://homologacao.sefaz.to.gov.br/nfce/qrcode	http://homologacao.sefaz.to.gov.br/nfce/consulta.jsf

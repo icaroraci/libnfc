@@ -1,0 +1,125 @@
+# Webservices da NFC-e (modelo 65), versão 4.00, por autorizador e ambiente.
+#
+# Fonte: Portal Nacional da NFC-e (ENCAT), páginas oficiais
+#   https://nfce.encat.org/desenvolvedor/webservices-h/ (homologação)
+#   https://nfce.encat.org/desenvolvedor/webservices-p/ (produção)
+# Capturadas em 2026-10-04. Só a versão 4.00; o sufixo "?wsdl" das URLs de
+# GO foi retirado (é o endereço do WSDL, não do serviço).
+#
+# Conferência ao vivo (2026-10-04, WSL, certificado A1 de uma empresa do
+# RJ): NfeStatusServico4 de homologação respondeu cStat 107 em todos os
+# autorizadores, exceto MG, cuja conexão TLS exige a raiz Sectigo Public
+# Server Authentication Root R46, ausente no ca-certificates do Debian 12.
+# Na SVRS de homologação, autorização e recepção de evento também foram
+# usadas com sucesso (docs/HOMOLOGACAO.md). Os endereços de produção não
+# foram consultados.
+#
+# Colunas: autorizador, ambiente (h ou p), serviço, URL
+AM	h	autorizacao	https://homnfce.sefaz.am.gov.br/nfce-services/services/NfeAutorizacao4
+AM	h	ret_autorizacao	https://homnfce.sefaz.am.gov.br/nfce-services/services/NfeRetAutorizacao4
+AM	h	consulta	https://homnfce.sefaz.am.gov.br/nfce-services/services/NfeConsulta4
+AM	h	status	https://homnfce.sefaz.am.gov.br/nfce-services/services/NfeStatusServico4
+AM	h	evento	https://homnfce.sefaz.am.gov.br/nfce-services/services/RecepcaoEvento4
+AM	h	inutilizacao	https://homnfce.sefaz.am.gov.br/nfce-services/services/NfeInutilizacao4
+GO	h	autorizacao	https://homolog.sefaz.go.gov.br/nfe/services/NFeAutorizacao4
+GO	h	ret_autorizacao	https://homolog.sefaz.go.gov.br/nfe/services/NFeRetAutorizacao4
+GO	h	consulta	https://homolog.sefaz.go.gov.br/nfe/services/NFeConsultaProtocolo4
+GO	h	status	https://homolog.sefaz.go.gov.br/nfe/services/NFeStatusServico4
+GO	h	evento	https://homolog.sefaz.go.gov.br/nfe/services/NFeRecepcaoEvento4
+GO	h	inutilizacao	https://homolog.sefaz.go.gov.br/nfe/services/NFeInutilizacao4
+MG	h	autorizacao	https://hnfce.fazenda.mg.gov.br/nfce/services/NFeAutorizacao4
+MG	h	ret_autorizacao	https://hnfce.fazenda.mg.gov.br/nfce/services/NFeRetAutorizacao4
+MG	h	consulta	https://hnfce.fazenda.mg.gov.br/nfce/services/NFeConsultaProtocolo4
+MG	h	status	https://hnfce.fazenda.mg.gov.br/nfce/services/NFeStatusServico4
+MG	h	evento	https://hnfce.fazenda.mg.gov.br/nfce/services/NFeRecepcaoEvento4
+MG	h	inutilizacao	https://hnfce.fazenda.mg.gov.br/nfce/services/NFeInutilizacao4
+MS	h	autorizacao	https://hom.nfce.sefaz.ms.gov.br/ws/NFeAutorizacao4
+MS	h	ret_autorizacao	https://hom.nfce.sefaz.ms.gov.br/ws/NFeRetAutorizacao4
+MS	h	consulta	https://hom.nfce.sefaz.ms.gov.br/ws/NFeConsultaProtocolo4
+MS	h	status	https://hom.nfce.sefaz.ms.gov.br/ws/NFeStatusServico4
+MS	h	evento	https://hom.nfce.sefaz.ms.gov.br/ws/NFeRecepcaoEvento4
+MS	h	inutilizacao	https://hom.nfce.sefaz.ms.gov.br/ws/NFeInutilizacao4
+MT	h	autorizacao	https://homologacao.sefaz.mt.gov.br/nfcews/services/NfeAutorizacao4
+MT	h	ret_autorizacao	https://homologacao.sefaz.mt.gov.br/nfcews/services/NfeRetAutorizacao4
+MT	h	consulta	https://homologacao.sefaz.mt.gov.br/nfcews/services/NfeConsulta4
+MT	h	status	https://homologacao.sefaz.mt.gov.br/nfcews/services/NfeStatusServico4
+MT	h	evento	https://homologacao.sefaz.mt.gov.br/nfcews/services/RecepcaoEvento4
+MT	h	inutilizacao	https://homologacao.sefaz.mt.gov.br/nfcews/services/NfeInutilizacao4
+PR	h	autorizacao	https://homologacao.nfce.sefa.pr.gov.br/nfce/NFeAutorizacao4
+PR	h	ret_autorizacao	https://homologacao.nfce.sefa.pr.gov.br/nfce/NFeRetAutorizacao4
+PR	h	consulta	https://homologacao.nfce.sefa.pr.gov.br/nfce/NFeConsultaProtocolo4
+PR	h	status	https://homologacao.nfce.sefa.pr.gov.br/nfce/NFeStatusServico4
+PR	h	evento	https://homologacao.nfce.sefa.pr.gov.br/nfce/NFeRecepcaoEvento4
+PR	h	inutilizacao	https://homologacao.nfce.sefa.pr.gov.br/nfce/NFeInutilizacao4
+RS	h	autorizacao	https://nfce-homologacao.sefazrs.rs.gov.br/ws/NfeAutorizacao/NFeAutorizacao4.asmx
+RS	h	ret_autorizacao	https://nfce-homologacao.sefazrs.rs.gov.br/ws/NfeRetAutorizacao/NFeRetAutorizacao4.asmx
+RS	h	consulta	https://nfce-homologacao.sefazrs.rs.gov.br/ws/NfeConsulta/NfeConsulta4.asmx
+RS	h	status	https://nfce-homologacao.sefazrs.rs.gov.br/ws/NfeStatusServico/NfeStatusServico4.asmx
+RS	h	evento	https://nfce-homologacao.sefazrs.rs.gov.br/ws/recepcaoevento/recepcaoevento4.asmx
+RS	h	inutilizacao	https://nfce-homologacao.sefazrs.rs.gov.br/ws/nfeinutilizacao/nfeinutilizacao4.asmx
+SP	h	autorizacao	https://homologacao.nfce.fazenda.sp.gov.br/ws/NFeAutorizacao4.asmx
+SP	h	ret_autorizacao	https://homologacao.nfce.fazenda.sp.gov.br/ws/NFeRetAutorizacao4.asmx
+SP	h	consulta	https://homologacao.nfce.fazenda.sp.gov.br/ws/NFeConsultaProtocolo4.asmx
+SP	h	status	https://homologacao.nfce.fazenda.sp.gov.br/ws/NFeStatusServico4.asmx
+SP	h	evento	https://homologacao.nfce.fazenda.sp.gov.br/ws/NFeRecepcaoEvento4.asmx
+SP	h	inutilizacao	https://homologacao.nfce.fazenda.sp.gov.br/ws/NFeInutilizacao4.asmx
+SVRS	h	autorizacao	https://nfce-homologacao.svrs.rs.gov.br/ws/NfeAutorizacao/NFeAutorizacao4.asmx
+SVRS	h	ret_autorizacao	https://nfce-homologacao.svrs.rs.gov.br/ws/NfeRetAutorizacao/NFeRetAutorizacao4.asmx
+SVRS	h	consulta	https://nfce-homologacao.svrs.rs.gov.br/ws/NfeConsulta/NfeConsulta4.asmx
+SVRS	h	status	https://nfce-homologacao.svrs.rs.gov.br/ws/NfeStatusServico/NfeStatusServico4.asmx
+SVRS	h	evento	https://nfce-homologacao.svrs.rs.gov.br/ws/recepcaoevento/recepcaoevento4.asmx
+SVRS	h	inutilizacao	https://nfce-homologacao.svrs.rs.gov.br/ws/nfeinutilizacao/nfeinutilizacao4.asmx
+AM	p	autorizacao	https://nfce.sefaz.am.gov.br/nfce-services/services/NfeAutorizacao4
+AM	p	ret_autorizacao	https://nfce.sefaz.am.gov.br/nfce-services/services/NfeRetAutorizacao4
+AM	p	consulta	https://nfce.sefaz.am.gov.br/nfce-services/services/NfeConsulta4
+AM	p	status	https://nfce.sefaz.am.gov.br/nfce-services/services/NfeStatusServico4
+AM	p	evento	https://nfce.sefaz.am.gov.br/nfce-services/services/RecepcaoEvento4
+AM	p	inutilizacao	https://nfce.sefaz.am.gov.br/nfce-services/services/NfeInutilizacao4
+GO	p	autorizacao	https://nfe.sefaz.go.gov.br/nfe/services/NFeAutorizacao4
+GO	p	ret_autorizacao	https://nfe.sefaz.go.gov.br/nfe/services/NFeRetAutorizacao4
+GO	p	consulta	https://nfe.sefaz.go.gov.br/nfe/services/NFeConsultaProtocolo4
+GO	p	status	https://nfe.sefaz.go.gov.br/nfe/services/NFeStatusServico4
+GO	p	evento	https://nfe.sefaz.go.gov.br/nfe/services/NFeRecepcaoEvento4
+GO	p	inutilizacao	https://nfe.sefaz.go.gov.br/nfe/services/NFeInutilizacao4
+MG	p	autorizacao	https://nfce.fazenda.mg.gov.br/nfce/services/NFeAutorizacao4
+MG	p	ret_autorizacao	https://nfce.fazenda.mg.gov.br/nfce/services/NFeRetAutorizacao4
+MG	p	consulta	https://nfce.fazenda.mg.gov.br/nfce/services/NFeConsultaProtocolo4
+MG	p	status	https://nfce.fazenda.mg.gov.br/nfce/services/NFeStatusServico4
+MG	p	evento	https://nfce.fazenda.mg.gov.br/nfce/services/NFeRecepcaoEvento4
+MG	p	inutilizacao	https://nfce.fazenda.mg.gov.br/nfce/services/NFeInutilizacao4
+MS	p	autorizacao	https://nfce.sefaz.ms.gov.br/ws/NFeAutorizacao4
+MS	p	ret_autorizacao	https://nfce.sefaz.ms.gov.br/ws/NFeRetAutorizacao4
+MS	p	consulta	https://nfce.sefaz.ms.gov.br/ws/NFeConsultaProtocolo4
+MS	p	status	https://nfce.sefaz.ms.gov.br/ws/NFeStatusServico4
+MS	p	evento	https://nfce.sefaz.ms.gov.br/ws/NFeRecepcaoEvento4
+MS	p	inutilizacao	https://nfce.sefaz.ms.gov.br/ws/NFeInutilizacao4
+MT	p	autorizacao	https://nfce.sefaz.mt.gov.br/nfcews/services/NfeAutorizacao4
+MT	p	ret_autorizacao	https://nfce.sefaz.mt.gov.br/nfcews/services/NfeRetAutorizacao4
+MT	p	consulta	https://nfce.sefaz.mt.gov.br/nfcews/services/NfeConsulta4
+MT	p	status	https://nfce.sefaz.mt.gov.br/nfcews/services/NfeStatusServico4
+MT	p	evento	https://nfce.sefaz.mt.gov.br/nfcews/services/RecepcaoEvento4
+MT	p	inutilizacao	https://nfce.sefaz.mt.gov.br/nfcews/services/NfeInutilizacao4
+PR	p	autorizacao	https://nfce.sefa.pr.gov.br/nfce/NFeAutorizacao4
+PR	p	ret_autorizacao	https://nfce.sefa.pr.gov.br/nfce/NFeRetAutorizacao4
+PR	p	consulta	https://nfce.sefa.pr.gov.br/nfce/NFeConsultaProtocolo4
+PR	p	status	https://nfce.sefa.pr.gov.br/nfce/NFeStatusServico4
+PR	p	evento	https://nfce.sefa.pr.gov.br/nfce/NFeRecepcaoEvento4
+PR	p	inutilizacao	https://nfce.sefa.pr.gov.br/nfce/NFeInutilizacao4
+RS	p	autorizacao	https://nfce.sefazrs.rs.gov.br/ws/NfeAutorizacao/NFeAutorizacao4.asmx
+RS	p	ret_autorizacao	https://nfce.sefazrs.rs.gov.br/ws/NfeRetAutorizacao/NFeRetAutorizacao4.asmx
+RS	p	consulta	https://nfce.sefazrs.rs.gov.br/ws/NfeConsulta/NfeConsulta4.asmx
+RS	p	status	https://nfce.sefazrs.rs.gov.br/ws/NfeStatusServico/NfeStatusServico4.asmx
+RS	p	evento	https://nfce.sefazrs.rs.gov.br/ws/recepcaoevento/recepcaoevento4.asmx
+RS	p	inutilizacao	https://nfce.sefazrs.rs.gov.br/ws/nfeinutilizacao/nfeinutilizacao4.asmx
+SP	p	autorizacao	https://nfce.fazenda.sp.gov.br/ws/NFeAutorizacao4.asmx
+SP	p	ret_autorizacao	https://nfce.fazenda.sp.gov.br/ws/NFeRetAutorizacao4.asmx
+SP	p	consulta	https://nfce.fazenda.sp.gov.br/ws/NFeConsultaProtocolo4.asmx
+SP	p	status	https://nfce.fazenda.sp.gov.br/ws/NFeStatusServico4.asmx
+SP	p	evento	https://nfce.fazenda.sp.gov.br/ws/NFeRecepcaoEvento4.asmx
+SP	p	inutilizacao	https://nfce.fazenda.sp.gov.br/ws/NFeInutilizacao4.asmx
+SVRS	p	autorizacao	https://nfce.svrs.rs.gov.br/ws/NfeAutorizacao/NFeAutorizacao4.asmx
+SVRS	p	ret_autorizacao	https://nfce.svrs.rs.gov.br/ws/NfeRetAutorizacao/NFeRetAutorizacao4.asmx
+SVRS	p	consulta	https://nfce.svrs.rs.gov.br/ws/NfeConsulta/NfeConsulta4.asmx
+SVRS	p	status	https://nfce.svrs.rs.gov.br/ws/NfeStatusServico/NfeStatusServico4.asmx
+SVRS	p	evento	https://nfce.svrs.rs.gov.br/ws/recepcaoevento/recepcaoevento4.asmx
+SVRS	p	inutilizacao	https://nfce.svrs.rs.gov.br/ws/nfeinutilizacao/nfeinutilizacao4.asmx
