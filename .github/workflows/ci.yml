@@ -23,7 +23,7 @@ jobs:
             pacotes: clang libclang-rt-dev
     env:
       CC: ${{ matrix.cc }}
-      # Versão da libnfe (branch, tag ou commit do tooldoce) usada no CI
+      # Versão da libnfe (branch, tag ou commit do tooldoce) usada no CI.
       LIBNFE_REF: master
     steps:
       - uses: actions/checkout@v4

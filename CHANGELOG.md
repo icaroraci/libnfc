@@ -7,8 +7,8 @@ As mudanças relevantes de cada versão ficam registradas aqui. O formato segue 
 ### Adicionado
 
 - Estrutura do projeto: Makefile (biblioteca `libnfc.so.0`, testes, `make install` com `libnfc.pc`), testes com AddressSanitizer e UBSan, CI com gcc e clang e `.clang-format`.
-- Dependência da libnfe 1.x pelo `pkg-config`.
-- QR Code da NFC-e (`qrcode.h`): versão 2 com CSC (emissão normal e contingência offline) e versão 3 (emissão normal), e o grupo `infNFeSupl` inserido na nota assinada sem invalidar a assinatura.
+- Dependência da libnfe 1.x pelo `pkg-config`; o QR Code versão 3 offline usa `nfe_certificado_assinar` (icaroraci/tooldoce#270).
+- QR Code da NFC-e (`qrcode.h`): versão 2 com CSC (emissão normal e contingência offline) e versão 3 (emissão normal e contingência offline, com os parâmetros assinados pelo certificado do emitente; `nfc_qrcode_set_certificado`), e o grupo `infNFeSupl` inserido na nota assinada sem invalidar a assinatura.
 - Emissão (`nfce.h`): `nfc_assinar` (assinatura e QR Code) e `nfc_autorizar` (lote síncrono, `cStat` e `nfeProc`).
 - Endereços da NFC-e por UF e ambiente (`enderecos.h`): `nfc_sefaz_endereco` (webservices 4.00 do autorizador da UF) e `nfc_qrcode_endereco` (`qrCode` e `urlChave`), para as 27 UFs. Tabela gerada por `tools/gerar_enderecos.py` a partir de `docs/enderecos/`, com as fontes oficiais (Portal Nacional da NFC-e) e a conferência em homologação registradas em `docs/ENDERECOS.md`.
 - Exemplo `examples/emitir_nfce.c`, que emite uma NFC-e de homologação; a versão do QR Code é escolhida por `NFC_QRCODE_VERSAO`, e `NFC_TPEMIS=9` emite em contingência offline. As URLs de consulta vêm da tabela pela `NFC_CUF`, e `auto` no lugar da URL usa o serviço de autorização da tabela.

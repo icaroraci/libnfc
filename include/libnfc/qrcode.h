@@ -21,6 +21,8 @@
 
 #include <stddef.h>
 
+#include <libnfe/assinatura.h>
+
 /*
  * QR Code da NFC-e: grupo infNFeSupl (qrCode e urlChave), que fica entre
  * infNFe e a assinatura. A assinatura cobre só infNFe, por isso o grupo é
@@ -34,9 +36,16 @@
  *     normal: p=chave|2|tpAmb|cIdToken|hash; contingência offline
  *     (tpEmis 9): p=chave|2|tpAmb|dia|vNF|digVal|cIdToken|hash. O hash é o
  *     SHA-1, em hexadecimal maiúsculo, dos parâmetros seguidos do CSC.
- *   - 3: sem CSC. Emissão normal: p=chave|3|tpAmb. A contingência offline
- *     na versão 3 exige uma assinatura RSA com a chave do certificado, que
- *     a libnfe ainda não oferece; por enquanto gera E_VALOR.
+ *   - 3 (NT 2025.001): sem CSC. Emissão normal: p=chave|3|tpAmb.
+ *     Contingência offline:
+ *     p=chave|3|tpAmb|dia|vNF|tp_idDest|idDest|assinatura, em que
+ *     tp_idDest é 1 (CNPJ), 2 (CPF) ou 3 (idEstrangeiro) e idDest o CNPJ
+ *     ou o CPF do destinatário (os dois vazios se a nota não tiver
+ *     destinatário; idDest vazio para o estrangeiro), e assinatura é a
+ *     assinatura RSA-SHA1, em base64, dos parâmetros anteriores (de chave
+ *     até idDest, com os separadores), feita com a chave do certificado
+ *     do emitente (nfc_qrcode_set_certificado; nfc_assinar usa o
+ *     certificado com que assina a nota).
  *
  * Uso típico:
  *   nfc_qrcode *q = nfc_qrcode_new();
@@ -68,6 +77,12 @@ int nfc_qrcode_get_versao(const nfc_qrcode *q);
  * lugar algum. Retorna 0, E_ISNULL, E_TAMANHO ou E_VALOR. */
 int nfc_qrcode_set_csc(nfc_qrcode *q, const char *id, const char *csc);
 
+/* Certificado do emitente, usado só pela versão 3 em contingência offline
+ * para assinar os parâmetros (a chave não sai do certificado). q guarda
+ * apenas a referência: cert deve continuar existindo enquanto q for
+ * usado; NULL desfaz a escolha. Retorna 0 ou E_ISNULL (q nulo). */
+int nfc_qrcode_set_certificado(nfc_qrcode *q, const nfe_certificado *cert);
+
 /* URL da consulta pelo QR Code (http:// ou https://, até 900 caracteres,
  * sem '?') e texto de urlChave (URL da consulta pela chave de acesso, 21 a
  * 85 caracteres). Retorna 0, E_ISNULL, E_TAMANHO ou E_VALOR. */
@@ -77,10 +92,11 @@ int nfc_qrcode_set_url(nfc_qrcode *q, const char *url_qrcode,
 /* Conteúdo do campo qrCode para a NFC-e assinada xml (tam bytes; documento
  * <NFe> modelo 65), em *qrcode (alocado e terminado em '\0'; libere com
  * free()). Os dados vêm da própria nota: chave de acesso, tpAmb, tpEmis,
- * dhEmi, vNF e, na contingência offline, o DigestValue da assinatura.
- * Retorna 0, E_ISNULL, E_XML (documento malformado, que não é NFC-e ou sem
- * algum desses campos), E_VALOR (falta o CSC ou a URL, ou caso ainda não
- * suportado) ou E_MALLOC. */
+ * dhEmi, vNF, a identificação do destinatário e, na contingência offline
+ * da versão 2, o DigestValue da assinatura. Retorna 0, E_ISNULL, E_XML
+ * (documento malformado, que não é NFC-e ou sem algum desses campos),
+ * E_VALOR (falta o CSC, a URL ou, na versão 3 offline, o certificado, ou
+ * a assinatura falhou) ou E_MALLOC. */
 int nfc_qrcode_gerar(const nfc_qrcode *q, const char *xml, size_t tam,
                      char **qrcode);
 

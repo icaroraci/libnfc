@@ -23,6 +23,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include <libnfe/assinatura.h>
 #include <libnfe/erros.h>
 #include <libnfc/qrcode.h>
 
@@ -122,7 +123,7 @@ static void testa_gerar(void)
 	nota(xml, sizeof xml, CHAVE_OFFLINE, "65", "9", 0);
 	VERIFICA_INT(nfc_qrcode_gerar(q, xml, strlen(xml), &qr), E_XML);
 
-	/* Versão 3: sem CSC na emissão normal; offline ainda não */
+	/* Versão 3: sem CSC na emissão normal; offline sem certificado */
 	nfc_qrcode_set_versao(q, 3);
 	nota(xml, sizeof xml, CHAVE_NORMAL, "65", "1", 0);
 	VERIFICA_INT(nfc_qrcode_gerar(q, xml, strlen(xml), &qr), 0);
@@ -140,6 +141,95 @@ static void testa_gerar(void)
 	VERIFICA_INT(nfc_qrcode_gerar(q, NULL, 0, &qr), E_ISNULL);
 	VERIFICA(qr == NULL);
 
+	nfc_qrcode_free(q);
+}
+
+/* Versão 3 em contingência offline: parâmetros assinados (RSA-SHA1, base64)
+ * com a chave de tests/certificados/teste.pfx. Assinaturas esperadas
+ * calculadas à parte:
+ *   printf '%s' "$P" | openssl dgst -sha1 -sign chave.pem | base64 -w0 */
+#define ASSIN_SEM_DEST                                                         \
+	"frvl+6+LGLzRBQqL8x/FSTJ6lTKG69mEaGaFmQZgFCaB7/ZzOMzHKIsMqMzX"         \
+	"2Bchq5ecSEft6uZNCdqHbUUIWiHmBItkr5HMl02kShWDUnKcvKqmCMhVR3yf"         \
+	"6d5jL8jHyR38yYH4eXvA3y1hoDSUbK/czLrvlj96EuKhGeRYNWRSCM8oNOi5"         \
+	"Fzi2BDmppC7iEjoyjlTTex7p4bWX1owzzyeose8V39TN+VOfuOQFQHvYDQWJ"         \
+	"jyeRYFS16JvzCNrgTO4w04Tb2ZnBcqyHVP4k+jmvpv/66qcucySCEuVzP/dV"         \
+	"2SLVTLeFwSE0GtVRrWsIhoNAEwfvcjPOFauVLIOGiQ=="
+#define ASSIN_CPF                                                              \
+	"WudCc4fUADj6tfUZB37/493gHO9X/Zic+WULrFNVXDlnnk99SaUyGpkagvtr"         \
+	"hpV4IoDbSr0Hgxp+v0/dv591avbtS6pW6OXcCrFJogHKp/1Liyux2wJMRyGr"         \
+	"P9NZRfI7EztfWGC3tDwqf2mZmSUFA1ODnu5ssLn+BKJOtjFCSjnlE2+1UMJe"         \
+	"GfDab19mXFSMmjMAQgEVmu/CBx7yapYrBEMSRIUf9SzdmRj8Q70n0/7RL7io"         \
+	"GwjXiWYpPaPk62pSTbtLVkTNND6em8oHVRSlg5s6juoxsJozgRSGqj6kopGx"         \
+	"wfTEITptjcGax4D/Rs9OBk0lySN8qYDySjFrkY4BDg=="
+
+/* NFC-e offline com destinatário opcional (dest: grupo <dest> ou "") */
+static void nota_dest(char *buf, size_t tam, const char *dest)
+{
+	snprintf(buf, tam,
+	         "<NFe xmlns=\"http://www.portalfiscal.inf.br/nfe\">"
+	         "<infNFe Id=\"NFe" CHAVE_OFFLINE "\" versao=\"4.00\"><ide>"
+	         "<mod>65</mod><dhEmi>2026-10-03T05:00:00-03:00</dhEmi>"
+	         "<tpEmis>9</tpEmis><tpAmb>2</tpAmb></ide>%s<total><ICMSTot>"
+	         "<vNF>30.00</vNF></ICMSTot></total></infNFe></NFe>",
+	         dest);
+}
+
+static void testa_v3_offline(const char *dir)
+{
+	nfc_qrcode *q = nfc_qrcode_new();
+	nfe_certificado *cert;
+	char pfx[1024], xml[1024], *qr = NULL, *saida = NULL;
+	int rc;
+
+	snprintf(pfx, sizeof pfx, "%s/certificados/teste.pfx", dir);
+	cert = nfe_certificado_pfx(pfx, "teste", &rc);
+	VERIFICA(cert != NULL);
+	if (cert == NULL) {
+		nfc_qrcode_free(q);
+		return;
+	}
+	nfc_qrcode_set_versao(q, 3);
+	nfc_qrcode_set_url(q, URL_QR, URL_CHAVE);
+	VERIFICA_INT(nfc_qrcode_set_certificado(NULL, cert), E_ISNULL);
+	VERIFICA_INT(nfc_qrcode_set_certificado(q, cert), 0);
+
+	/* Sem destinatário: tp_idDest e idDest vazios */
+	nota_dest(xml, sizeof xml, "");
+	VERIFICA_INT(nfc_qrcode_gerar(q, xml, strlen(xml), &qr), 0);
+	VERIFICA_STR(qr, URL_QR "?p=" CHAVE_OFFLINE
+	                        "|3|2|03|30.00|||" ASSIN_SEM_DEST);
+	free(qr);
+	qr = NULL;
+
+	/* Consumidor identificado pelo CPF */
+	nota_dest(xml, sizeof xml, "<dest><CPF>12345678909</CPF></dest>");
+	VERIFICA_INT(nfc_qrcode_gerar(q, xml, strlen(xml), &qr), 0);
+	VERIFICA_STR(qr, URL_QR "?p=" CHAVE_OFFLINE "|3|2|03|30.00|2|"
+	                        "12345678909|" ASSIN_CPF);
+	free(qr);
+	qr = NULL;
+
+	/* Estrangeiro: tipo 3, sem número */
+	nota_dest(xml, sizeof xml,
+	          "<dest><idEstrangeiro>AB123</idEstrangeiro></dest>");
+	VERIFICA_INT(nfc_qrcode_gerar(q, xml, strlen(xml), &qr), 0);
+	VERIFICA(qr && strstr(qr, "|3|2|03|30.00|3||") != NULL);
+	free(qr);
+	qr = NULL;
+
+	/* O QR Code assinado vai para o infNFeSupl sem escapes */
+	nota_dest(xml, sizeof xml, "");
+	VERIFICA_INT(nfc_qrcode_inserir(q, xml, strlen(xml), &saida, NULL), 0);
+	VERIFICA(saida && strstr(saida, "|||" ASSIN_SEM_DEST "</qrCode>"));
+	free(saida);
+
+	/* Sem certificado */
+	nfc_qrcode_set_certificado(q, NULL);
+	VERIFICA_INT(nfc_qrcode_gerar(q, xml, strlen(xml), &qr), E_VALOR);
+	VERIFICA(qr == NULL);
+
+	nfe_certificado_free(cert);
 	nfc_qrcode_free(q);
 }
 
@@ -173,10 +263,11 @@ static void testa_inserir(void)
 	nfc_qrcode_free(q);
 }
 
-int main(void)
+int main(int argc, char **argv)
 {
 	testa_config();
 	testa_gerar();
+	testa_v3_offline(argc > 1 ? argv[1] : "tests");
 	testa_inserir();
 	TESTE_FIM();
 }

@@ -16,7 +16,7 @@ A libnfc depende da [libnfe](https://github.com/icaroraci/tooldoce) 1.x e não d
 
 ## O que falta, na libnfc
 
-1. ~~**QR Code e CSC**~~ (`qrcode.h`, `nfce.h`): `qrCode` nas versões 2 (normal e offline) e 3 (normal) e `urlChave`, inseridos após a assinatura; autorização síncrona com `nfeProc`. Falta a versão 3 em contingência offline, que assina os parâmetros com a chave do certificado (RSA-SHA1): a libnfe precisa expor essa assinatura ([#3](https://github.com/icaroraci/libnfc/issues/3)).
+1. ~~**QR Code e CSC**~~ (`qrcode.h`, `nfce.h`): `qrCode` nas versões 2 e 3 (normal e offline) e `urlChave`, inseridos após a assinatura; autorização síncrona com `nfeProc`. A versão 3 offline assina os parâmetros com a chave do certificado (RSA-SHA1) pela `nfe_certificado_assinar` da libnfe ([#3](https://github.com/icaroraci/libnfc/issues/3)).
 2. ~~**Endereços dos webservices da NFC-e**~~ (`enderecos.h`): webservices 4.00 por UF e ambiente e as URLs de consulta do QR Code e de `urlChave`, com as fontes em `docs/ENDERECOS.md` ([#4](https://github.com/icaroraci/libnfc/issues/4)).
 3. **Contingência offline** (`tpEmis` 9): fluxo de emissão sem a SEFAZ e transmissão posterior.
 4. **Homologação real** dos serviços, documentada como em `docs/HOMOLOGACAO.md` do tooldoce.

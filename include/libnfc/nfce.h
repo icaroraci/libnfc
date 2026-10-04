@@ -40,7 +40,10 @@
  */
 
 /* Assina a NFC-e xml (documento <NFe> sem assinatura, tam bytes) com o
- * certificado e acrescenta o QR Code (infNFeSupl) conforme q. Devolve em
+ * certificado e acrescenta o QR Code (infNFeSupl) conforme q; na versão 3
+ * em contingência offline, os parâmetros do QR Code são assinados com o
+ * mesmo certificado (o de nfc_qrcode_set_certificado não é usado aqui).
+ * Devolve em
  * *nfce o documento pronto para transmitir (alocado e terminado em '\0';
  * libere com free()); o tamanho vai em *tam_nfce, se não for NULL.
  * Retorna 0 ou os códigos de nfe_assinar_xml e nfc_qrcode_inserir. */
