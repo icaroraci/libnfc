@@ -26,8 +26,9 @@
  *   ./obj/emitir_nfce <arquivo.pfx> <senha> <id CSC> <CSC> [url [ca.pem]]
  *
  * Sem url, escreve a NFC-e assinada na saída padrão. Com url (serviço
- * NFeAutorizacao4 da NFC-e da UF, em homologação), envia a nota e escreve
- * o nfeProc se ela for autorizada; o cStat vai para a saída de erros.
+ * NFeAutorizacao4 da NFC-e da UF, em homologação, ou "auto" para o
+ * endereço da tabela de enderecos.h), envia a nota e escreve o nfeProc se
+ * ela for autorizada; o cStat vai para a saída de erros.
  * ca.pem (opcional) tem as autoridades certificadoras do servidor (ex.:
  * cadeia ICP-Brasil), se as do sistema não bastarem.
  *
@@ -35,7 +36,8 @@
  * dados fictícios de São Paulo, que só servem sem url:
  *   NFC_CUF (35), NFC_UF (SP), NFC_CMUN (3550308), NFC_XMUN (SAO PAULO),
  *   NFC_CNPJ, NFC_IE, NFC_XNOME, NFC_SERIE (1), NFC_NNF (1),
- *   NFC_URL_QRCODE e NFC_URL_CHAVE (URLs de consulta da NFC-e da UF),
+ *   NFC_URL_QRCODE e NFC_URL_CHAVE (URLs de consulta da NFC-e; sem elas,
+ *   as da UF de NFC_CUF na tabela de enderecos.h),
  *   NFC_QRCODE_VERSAO (2; na versão 3, a emissão normal não usa o CSC),
  *   NFC_TPEMIS (1; 9 emite em contingência offline, com dhCont e xJust).
  *
@@ -45,10 +47,12 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <time.h>
 
 #include <libnfe/erros.h>
 #include <libnfe/nfe_nfe.h>
+#include <libnfc/enderecos.h>
 #include <libnfc/nfce.h>
 #include <libnfc/versao.h>
 
@@ -160,6 +164,8 @@ int main(int argc, char **argv)
 	nfc_qrcode *q;
 	nfe_nfe *nota;
 	char *xml = NULL, *nfce = NULL, *proc = NULL, motivo[256];
+	const char *url_qrcode = NULL, *url_chave = NULL, *url = NULL;
+	nfe_uf uf;
 	size_t tam = 0;
 	int rc = 0, cstat = 0;
 
@@ -176,19 +182,30 @@ int main(int argc, char **argv)
 		return 1;
 	}
 
+	/* URLs de consulta e do serviço de autorização da UF (homologação),
+	 * da tabela de enderecos.h */
+	uf = (nfe_uf)atoi(var("NFC_CUF", "35"));
+	rc = nfc_qrcode_endereco(uf, NFE_AMBIENTE_HOMOLOGACAO, &url_qrcode,
+	                         &url_chave);
+	if (rc == 0)
+		rc = nfc_sefaz_endereco(uf, NFE_AMBIENTE_HOMOLOGACAO,
+		                        NFE_SERVICO_AUTORIZACAO, &url);
+	if (rc != 0) {
+		fprintf(stderr, "NFC_CUF inválido\n");
+		nfe_certificado_free(cert);
+		return 1;
+	}
+	if (argc > 5 && strcmp(argv[5], "auto") != 0)
+		url = argv[5];
+
 	q = nfc_qrcode_new();
 	rc = q ? nfc_qrcode_set_csc(q, argv[3], argv[4]) : E_MALLOC;
 	if (rc == 0)
 		rc = nfc_qrcode_set_versao(q,
 		                           atoi(var("NFC_QRCODE_VERSAO", "2")));
 	if (rc == 0)
-		rc = nfc_qrcode_set_url(
-		        q,
-		        var("NFC_URL_QRCODE",
-		            "https://www.homologacao.nfce.fazenda.sp.gov.br/"
-		            "qrcode"),
-		        var("NFC_URL_CHAVE",
-		            "www.homologacao.nfce.fazenda.sp.gov.br/consulta"));
+		rc = nfc_qrcode_set_url(q, var("NFC_URL_QRCODE", url_qrcode),
+		                        var("NFC_URL_CHAVE", url_chave));
 	if (rc != 0) {
 		fprintf(stderr, "QR Code (CSC ou URLs): %s\n",
 		        nfe_strerror(rc));
@@ -220,8 +237,8 @@ int main(int argc, char **argv)
 		if (rc == 0 && argc > 6)
 			rc = nfe_sefaz_set_ca(s, argv[6]);
 		if (rc == 0)
-			rc = nfc_autorizar(s, argv[5], "1", nfce, &cstat,
-			                   motivo, sizeof motivo, &proc, NULL);
+			rc = nfc_autorizar(s, url, "1", nfce, &cstat, motivo,
+			                   sizeof motivo, &proc, NULL);
 		if (rc == 0) {
 			fprintf(stderr, "cStat %d: %s\n", cstat, motivo);
 			printf("%s\n", proc ? proc : nfce);
