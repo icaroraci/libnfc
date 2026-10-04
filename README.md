@@ -1,7 +1,9 @@
 # libnfc
 
 [![CI](https://github.com/icaroraci/libnfc/actions/workflows/ci.yml/badge.svg)](https://github.com/icaroraci/libnfc/actions/workflows/ci.yml)
+[![Versão](https://img.shields.io/github/v/release/icaroraci/libnfc?include_prereleases&label=vers%C3%A3o)](https://github.com/icaroraci/libnfc/releases)
 [![Licença: LGPL v3+](https://img.shields.io/badge/licen%C3%A7a-LGPLv3%2B-blue.svg)](LICENSE)
+[![NFC-e homologada](https://img.shields.io/badge/NFC--e%2065-homologada%20na%20SEFAZ-brightgreen.svg)](docs/HOMOLOGACAO.md)
 
 Biblioteca C para emissão de NFC-e (Nota Fiscal de Consumidor Eletrônica, modelo 65).
 
@@ -9,7 +11,7 @@ A libnfc é construída sobre a [libnfe](https://github.com/icaroraci/tooldoce),
 
 ## Situação
 
-Em desenvolvimento (0.1.0-dev). A emissão foi autorizada na homologação real da SEFAZ (RJ, pela SVRS): ver [`docs/HOMOLOGACAO.md`](docs/HOMOLOGACAO.md).
+**Versão 1.0.0-rc1**, candidata à 1.0 (ver o [histórico de mudanças](CHANGELOG.md)). Requer a libnfe 1.0.0-rc2 ou posterior. A partir da 1.0, a API segue o versionamento semântico: mudanças incompatíveis só numa nova versão maior, que também troca o `SONAME` (`libnfc.so.1`). A emissão foi autorizada na homologação real da SEFAZ (RJ, pela SVRS): ver [`docs/HOMOLOGACAO.md`](docs/HOMOLOGACAO.md).
 
 | Recurso | Situação |
 |---|---|
@@ -57,7 +59,7 @@ make LIBNFE_CFLAGS="-I/usr/local/include $(xml2-config --cflags)" LIBNFE_LIBS="-
 ## Compilação
 
 ```sh
-make                      # lib/libnfc.so (SONAME libnfc.so.0)
+make                      # lib/libnfc.so (SONAME libnfc.so.1)
 make test                 # testes com AddressSanitizer e UBSan (python3 para o servidor falso da SEFAZ)
 make exemplos             # examples/*.c em obj/
 make install PREFIX=/usr  # biblioteca, headers em include/libnfc e libnfc.pc
