@@ -10,7 +10,7 @@ Candidata à primeira versão estável (1.0.0). Cobre a emissão da NFC-e (model
 
 ### Adicionado
 
-- Estrutura do projeto: Makefile (biblioteca `libnfc.so.0`, testes, `make install` com `libnfc.pc`), testes com AddressSanitizer e UBSan, CI com gcc e clang e `.clang-format`.
+- Estrutura do projeto: Makefile (biblioteca `libnfc.so.1`, testes, `make install` com `libnfc.pc`), testes com AddressSanitizer e UBSan, CI com gcc e clang e `.clang-format`.
 - Dependência da libnfe 1.x (1.0.0-rc2 ou posterior) pelo `pkg-config`; o QR Code versão 3 offline usa `nfe_certificado_assinar` (icaroraci/tooldoce#270).
 - QR Code da NFC-e (`qrcode.h`): versão 2 com CSC (emissão normal e contingência offline) e versão 3 (emissão normal e contingência offline, com os parâmetros assinados pelo certificado do emitente; `nfc_qrcode_set_certificado`), e o grupo `infNFeSupl` inserido na nota assinada sem invalidar a assinatura.
 - Emissão (`nfce.h`): `nfc_assinar` (assinatura e QR Code) e `nfc_autorizar` (lote síncrono, `cStat` e `nfeProc`).
