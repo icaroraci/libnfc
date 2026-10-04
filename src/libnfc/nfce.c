@@ -22,6 +22,8 @@
 #include <libnfe/erros.h>
 #include <libnfc/nfce.h>
 
+#include "interno.h"
+
 int nfc_assinar(const nfe_certificado *cert, const nfc_qrcode *q,
                 const char *xml, size_t tam, char **nfce, size_t *tam_nfce)
 {
@@ -35,8 +37,10 @@ int nfc_assinar(const nfe_certificado *cert, const nfc_qrcode *q,
 	if (rc != 0)
 		return rc;
 	/* O QR Code vem depois da assinatura: na contingência offline ele
-	 * usa o DigestValue */
-	rc = nfc_qrcode_inserir(q, assinado, tam_assinado, nfce, tam_nfce);
+	 * usa o DigestValue (versão 2) ou é assinado com o mesmo certificado
+	 * (versão 3) */
+	rc = nfc_qrcode_inserir_cert(q, cert, assinado, tam_assinado, nfce,
+	                             tam_nfce);
 	free(assinado);
 	return rc;
 }
