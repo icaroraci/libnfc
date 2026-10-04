@@ -5,7 +5,7 @@
 
 Biblioteca C para emissão de NFC-e (Nota Fiscal de Consumidor Eletrônica, modelo 65).
 
-A libnfc é construída sobre a [libnfe](https://github.com/icaroraci/tooldoce), que já monta, valida, assina e transmite o XML do leiaute 4.00 comum à NF-e e à NFC-e. Aqui fica o que é próprio da NFC-e: QR Code e CSC (`infNFeSupl`), endereços dos webservices da NFC-e por UF, contingência offline e DANFE NFC-e. O roteiro está em [`docs/ROTEIRO.md`](docs/ROTEIRO.md).
+A libnfc é construída sobre a [libnfe](https://github.com/icaroraci/tooldoce), que já monta, valida, assina e transmite o XML do leiaute 4.00 comum à NF-e e à NFC-e. Aqui fica o que é próprio da NFC-e: QR Code e CSC (`infNFeSupl`), endereços dos webservices da NFC-e por UF e contingência offline. O DANFE NFC-e fica fora do escopo: é impresso pelo programa emissor a partir do `nfeProc`. O roteiro está em [`docs/ROTEIRO.md`](docs/ROTEIRO.md).
 
 ## Situação
 
@@ -14,10 +14,9 @@ Em desenvolvimento (0.1.0-dev). A emissão foi autorizada na homologação real 
 | Recurso | Situação |
 |---|---|
 | QR Code versão 2 (CSC), emissão normal e contingência offline | Pronto (`qrcode.h`) |
-| QR Code versão 3, emissão normal | Pronto; a contingência offline na versão 3 depende de uma função da libnfe |
+| QR Code versão 3, emissão normal | Pronto; a contingência offline na versão 3 depende de uma função da libnfe ([#3](https://github.com/icaroraci/libnfc/issues/3)) |
 | Assinatura com QR Code e autorização síncrona (`nfeProc`) | Pronto (`nfce.h`), autorizado na homologação real |
-| Endereços dos webservices e da consulta da NFC-e por UF | A fazer: por enquanto as URLs são informadas pelo programa |
-| DANFE NFC-e | A fazer |
+| Endereços dos webservices e da consulta da NFC-e por UF | A fazer: por enquanto as URLs são informadas pelo programa ([#4](https://github.com/icaroraci/libnfc/issues/4)) |
 
 ## Uso
 
